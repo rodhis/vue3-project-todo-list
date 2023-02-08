@@ -3,7 +3,6 @@
     <TodoItem />
     <TodoItem />
     <TodoItem />
-    <TodoItem />
     <div class="bg-gray-300 rounded-sm">
       <div
         class="flex items-center px-4 py-3 border-b border-gray-400 last:border-b-0"
@@ -31,7 +30,7 @@
           <input
             type="text"
             placeholder="Digite a sua tarefa"
-            value="Estudar Vue 3"
+            :value="todo.title"
             class="bg-gray-300 placeholder-gray-500 text-gray-700 font-light focus:outline-none block w-full appearance-none leading-normal mr-3"
           />
         </div>
@@ -64,7 +63,16 @@
 
 <script>
 import TodoItem from "@/components/TodoItem.vue";
+
 export default {
+
   components: { TodoItem },
+
+  props: {
+    todo: {
+      type: Object,
+      default: () => ({})
+    }
+  }
 };
 </script>
