@@ -1,14 +1,13 @@
 <template>
-  <div class="space-y-2">
-    <TodoItem />
-    <TodoItem />
-    <TodoItem />
     <div class="bg-gray-300 rounded-sm">
       <div
         class="flex items-center px-4 py-3 border-b border-gray-400 last:border-b-0"
       >
         <div class="flex items-center justify-center mr-2">
-          <button class="text-gray-400">
+          <button
+            :class="{ 'text-green-600': isCompleted, 'text-gray-400': !isCompleted}"
+            @click="onCheckClick"
+          >
             <svg
               class="w-5 h-5"
               fill="none"
@@ -28,15 +27,18 @@
 
         <div class="w-full">
           <input
+            v-model="title"
             type="text"
             placeholder="Digite a sua tarefa"
-            :value="todo.title"
             class="bg-gray-300 placeholder-gray-500 text-gray-700 font-light focus:outline-none block w-full appearance-none leading-normal mr-3"
+            @keyup.enter="onTitleChange"
           />
         </div>
 
         <div class="ml-auto flex items-center justify-center">
-          <button class="focus:outline-none">
+          <button class="focus:outline-none"
+            @click="onDelete"
+          >
             <svg
               class="ml-3 h-4 w-4 text-gray-500"
               viewBox="0 0 24 24"
@@ -58,21 +60,60 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
-import TodoItem from "@/components/TodoItem.vue";
+import { ref } from 'vue'
+import { useStore } from 'vuex';
 
 export default {
-
-  components: { TodoItem },
-
   props: {
     todo: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
+    },
+  },
+
+  setup(props) {
+    const title = ref(props.todo.title)
+    const isCompleted = ref(props.todo.completed)
+    const store = useStore()
+
+    const onDelete = () => {
+      store.dispatch('deleteTodo', props.todo.id)
     }
-  }
+
+    const updateTodo = () => {
+      const payload = {
+        id: props.todo.id,
+        data: {
+          title: title.value,
+          completed: isCompleted.value,
+        },
+      };
+      store.dispatch("updateTodo", payload);
+    }
+
+    const onTitleChange = () => {
+      if (!title.value) {
+        return;
+      }
+
+      updateTodo();
+    }
+
+    const onCheckClick = () => {
+      isCompleted.value = !isCompleted.value;
+      updateTodo();
+    }
+
+      return {
+        title,
+        isCompleted,
+        onDelete,
+        onTitleChange,
+        onCheckClick
+      }
+  },
 };
 </script>
