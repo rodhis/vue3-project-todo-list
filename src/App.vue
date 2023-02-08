@@ -1,6 +1,7 @@
 <template>
   <div class="px-3 py-10 md:px-10">
     <div class="w-full sm:w-1/2 lg:w-1/3 mx-auto">
+      <p class="text-center text-3xl font-bold text-white mb-10"> Lista de Afazeres</p>
       <TodoSpinner v-if="loading" />
 
       <template v-else>
